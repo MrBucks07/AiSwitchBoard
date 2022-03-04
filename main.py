@@ -19,6 +19,9 @@ send = False
 on = False
 off = True
 
+btnColor = (255, 0, 0)
+btnText = "OFF"
+
 while cam.isOpened():
     success, images = cam.read()
     if success:
@@ -26,8 +29,8 @@ while cam.isOpened():
         images = detector.detectHands(inputImage=images, draw=True)
 
         # drawing button on screen
-        cv2.rectangle(images, (10, 10), (100, 80), color=(255, 0, 0), thickness=cv2.FILLED)
-        cv2.putText(images, "OFF", (25, 50), fontFace=cv2.FONT_ITALIC, fontScale=1, thickness=2, color=(0, 0, 0))
+        cv2.rectangle(images, (10, 10), (100, 80), color=btnColor, thickness=cv2.FILLED)
+        cv2.putText(images, btnText, (25, 50), fontFace=cv2.FONT_ITALIC, fontScale=1, thickness=2, color=(0, 0, 0))
 
         if lmList:
             if 10 < lmList[8][0] < 100 and 10 < lmList[8][1] < 80:
@@ -39,6 +42,11 @@ while cam.isOpened():
                     if not send:
                         send = True
                         arduinoDetector.write(data.encode("utf-8"))
+                        btnColor = (0, 255, 0)
+                        btnText = "OFF"
+                        cv2.rectangle(images, (10, 10), (100, 80), color=btnColor, thickness=cv2.FILLED)
+                        cv2.putText(images, btnText, (25, 50), fontFace=cv2.FONT_ITALIC, fontScale=1, thickness=2,
+                                    color=(0, 0, 0))
                     sleep(0.6)
                     on = True
                     off = False
@@ -49,6 +57,11 @@ while cam.isOpened():
                     if not send:
                         send = True
                         arduinoDetector.write(data.encode("utf-8"))
+                        btnColor = (255, 0, 0)
+                        btnText = "ON"
+                        cv2.rectangle(images, (10, 10), (100, 80), color=btnColor, thickness=cv2.FILLED)
+                        cv2.putText(images, btnText, (25, 50), fontFace=cv2.FONT_ITALIC, fontScale=1, thickness=2,
+                                    color=(0, 0, 0))
                     sleep(0.6)
                     off = True
                     on = False
